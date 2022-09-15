@@ -1,50 +1,67 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native';
+
+let secret;
+let guesses;
 
 export default function App() {
-  const [text, setText] = useState('');
-  const [data, setData] = useState([]);
-  const handleGuess = () => {
-    setResult((Math.floor(Math.random() * 100) + 1) > Number(text));
-  }
-  const [result, setResult] = useState('');
+  const [input, setInput] = useState('');
+  const [guidance, setGuidance] = useState('');
 
+  const init = () => {
+    setGuidance('Guess a number between 1-100');
+    guesses = 0;
+    secret = Math.floor(Math.random() * 100) + 1;
+    console.log('Secret:', secret);
+  }
+
+  useEffect(() => {
+    init();
+  }, [])
+
+
+  const makeGuess = () => {
+    const guess = Number(input);
+    console.log('Guess:', guess);
+    guesses++;
+    if (guess < secret) {
+      setGuidance(`Your guess ${guess} is too low`);
+    } else if (guess > secret) {
+      setGuidance(`Your guess ${guess} is too high`);
+    } else {
+      Alert.alert(`You guessed the number in ${guesses} guesses`);
+      init();
+    }
+    setInput('');
+  }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) =>
-          <Text>{item.key}</Text>}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <Text>Guess a number between 1-100</Text>
-      <Text>Your guess {result} </Text>
+      <Text style={styles.title}>{guidance}</Text>
       <TextInput
-        style={{ width: 200, borderColor: 'gray', borderWidth: 1 }}
-        keyboardType='number-pad'
-        onChangeText={(text) => setText(text)}
-        value={text}
-      />
-      <Button onPress={handleGuess} title="MAKE GUESS" />
-      <StatusBar style="auto" />
+        style={styles.input} value={input} keyboardType='number-pad' onChangeText={text => setInput(text)}></TextInput>
+      <Button title="MAKE GUESS" onPress={makeGuess}></Button>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.5,
+    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+  },
+  title: {
+    fontsize: 20
   },
   input: {
-    marginTop: 10,
-    marginBottom: 5,
-    width: 50,
     borderColor: 'gray',
-    borderWidth: 1
+    borderWidth: 1,
+    width: '10%',
+    margin: 10,
+    fontsize: 16,
+
   }
 });
