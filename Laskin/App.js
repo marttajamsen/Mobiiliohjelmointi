@@ -1,12 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './HomeScreen'
+import SettingScreen from './SettingScreen'
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screenname name="Home" component={HomeScreen} />
+        <Tab.Screenname name="Settings" component={SettingScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
   const [result, setResult] = useState('');
   const [text, setText] = useState('');
   const [text2, setText2] = useState('');
   const [data, setData] = useState([]);
+
+
 
   const initialFocus = useRef(null);
 
